@@ -248,6 +248,7 @@ void InfoCallback(const sensor_msgs::CameraInfoConstPtr& camera_info)
 // Callback for image data
 void ImageCallback(const sensor_msgs::ImageConstPtr& msg)
 {
+    //printf("msg--------------------: %c",msg);
     if(!has_camera_info_){
         ROS_WARN("No Camera Info Received Yet");
         return;
@@ -443,13 +444,14 @@ void ConnectCallback(const ros::SingleSubscriberPublisher& info)
         ros::TransportHints ros_transport_hints(ros::TransportHints().tcpNoDelay());
         image_transport::TransportHints image_transport_hint(image_transport::TransportHints(
                                 "raw", ros_transport_hints, (*node_),
-                                "image_transport"));
-
+                               "image_transport"));
+    //DEFAULT_IMAGE_TOPIC="/camera/rgb/image_rect_color";
+    //DEFAULT_CAMERA_INFO_TOPIC="/camera/rgb/camera_info";
         image_subscriber = (*image_).subscribe(
-                DEFAULT_IMAGE_TOPIC, 1, &ImageCallback,
+                "/camera/rgb/image_rect_color", 1, &ImageCallback,
                 image_transport_hint);
         info_subscriber = (*node_).subscribe(
-                DEFAULT_CAMERA_INFO_TOPIC, 10, &InfoCallback);
+                "/camera/rgb/camera_info", 10, &InfoCallback);
         running_ = true;
     }
 }
@@ -557,7 +559,8 @@ int main(int argc, char **argv)
         cvStartWindowThread();
     }
 
-    ROS_INFO("AprilTags node started.");
+    ROS_INFO("AprilTags node.");
+    ROS_INFO("Let's try it out");
     running_ = false;
     has_camera_info_ = false;
     ros::spin();
